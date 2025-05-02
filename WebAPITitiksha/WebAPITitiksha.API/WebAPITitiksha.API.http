@@ -1,0 +1,6 @@
+@WebAPITitiksha.API_HostAddress = http://localhost:5208
+
+GET {{WebAPITitiksha.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
