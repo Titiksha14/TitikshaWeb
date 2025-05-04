@@ -1,5 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPITitiksha.API.Data;
+using WebAPITitiksha.API.Repository;
+using AutoMapper;
+ 
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +16,11 @@ builder.Services.AddDbContext<WebTitikshaDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("WebTitiksha"));
     });
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
