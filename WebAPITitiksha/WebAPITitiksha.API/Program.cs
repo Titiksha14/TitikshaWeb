@@ -18,6 +18,7 @@ builder.Services.AddDbContext<WebTitikshaDbContext>(options =>
     });
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services.AddScoped<IRegionRepository, RegionRepository>();
+builder.Services.AddScoped<IWalkRepository,WalkRepository>();
 
 
 

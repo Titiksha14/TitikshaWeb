@@ -18,7 +18,7 @@ namespace WebAPITitiksha.API.Repository
         {
             region.Id = Guid.NewGuid();
             await webTitikshaDbContext.AddAsync(region);
-            webTitikshaDbContext.SaveChangesAsync();
+            await webTitikshaDbContext.SaveChangesAsync();
             return region;
         }
 
