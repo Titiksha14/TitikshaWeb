@@ -1,5 +1,6 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using WebAPITitiksha.API.Data;
 using WebAPITitiksha.API.Models.Domain;
@@ -15,7 +16,7 @@ namespace WebAPITitiksha.API.Controllers
         private readonly IWalkDifficulty walkDifficultyRepository;
         private readonly IMapper mapper;
 
-        public WalkDifficultiesController(IWalkDifficulty walkDifficultyRepository, IMapper mapper)
+        public WalkDifficultiesController(IWalkDifficulty walkDifficultyRepository, IMapper mapper,IWalkDifficulty WalkDiffWalkDifficultyRepository)
         {
             this.walkDifficultyRepository = walkDifficultyRepository;
             this.mapper = mapper;
@@ -45,6 +46,11 @@ namespace WebAPITitiksha.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddWDAsync([FromBody] Models.DTO.AddWalkDifficultyRequest addWalkDifficultyRequest)
         {
+            //validate 
+            if (! await ValidateAddWDAsync(addWalkDifficultyRequest))
+            {
+                return BadRequest(ModelState);
+            }
             var walkDiffcultyDomain = new Models.Domain.WalkDifficulty
             {
                 Code = addWalkDifficultyRequest.Code
@@ -62,7 +68,12 @@ namespace WebAPITitiksha.API.Controllers
 
         public async Task<IActionResult> UpdateWalkDifficultyAsync(Guid id, Models.DTO.UpdateWalkDifficultyRequest updateWalkDifficultyRequest)
         {
-
+            
+                //validate 
+            if (!await ValidateUpdateWalkDifficultyAsync(updateWalkDifficultyRequest))
+            {
+                return BadRequest(ModelState);
+            }
             var walkDifficultyDomain = new Models.Domain.WalkDifficulty
             {
                 Code = updateWalkDifficultyRequest.Code
@@ -91,6 +102,53 @@ namespace WebAPITitiksha.API.Controllers
             return Ok(walkDifficultyDTO);
 
         }
+        #region Private methods 
+        private async Task<bool> ValidateAddWDAsync(Models.DTO.AddWalkDifficultyRequest addWalkDifficultyRequest)
+        {
+            if(addWalkDifficultyRequest == null)
+            {
+
+                ModelState.AddModelError(nameof(addWalkDifficultyRequest),
+                    $"{nameof(addWalkDifficultyRequest)}cannot be empty.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(addWalkDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(addWalkDifficultyRequest.Code),
+                    $"{nameof(addWalkDifficultyRequest.Code)} cannot be null or empty or white space.");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        private async Task<bool> ValidateUpdateWalkDifficultyAsync(Models.DTO.UpdateWalkDifficultyRequest updateWalkDifficultyRequest)
+        {
+            if (updateWalkDifficultyRequest == null)
+            {
+
+                ModelState.AddModelError(nameof(updateWalkDifficultyRequest),
+                    $"{nameof(updateWalkDifficultyRequest)}cannot be empty.");
+                return false;
+            }
+            if (string.IsNullOrWhiteSpace(updateWalkDifficultyRequest.Code))
+            {
+                ModelState.AddModelError(nameof(updateWalkDifficultyRequest.Code),
+                    $"{nameof(updateWalkDifficultyRequest.Code)} cannot be null or empty or white space.");
+            }
+            if (ModelState.ErrorCount > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
     }
+
+
 }
 
